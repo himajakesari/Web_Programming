@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>Schools Nearby</title>
+   
+    <script
+     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDTOdZ4QSiHhtqoA5z7MffY6wcSXjgx9yg&callback=initialize&libraries=places"defer></script>
+	
+   <style type="text/css">
+     /* Always set the map height explicitly to define the size of the div
+      * element that contains the map. */
+    #map{
+        margin-top: 25px;
+        height: 100%;        
+        }
+
+    /* Optional: Makes the sample page fill the window. */
+    html,body{
+        height: 100%;
+        margin: 10;
+        align-items: center;
+        text-align: center;
+    }
+
+   
+	
+	
+	
+   </style>
+
+   <script>
+   
+  
+   var map;
+   var service;
+
+   function initialize() {
+      var utd = new google.maps.LatLng(32.985771, -96.750003 );
+
+      map = new google.maps.Map(document.getElementById('map'), {
+          center: utd,
+          zoom: 18
+        });
+      const geocoder = new google.maps.Geocoder();
+      document.getElementById("search").addEventListener("click", () => {
+        geocodeService(geocoder, map);
+      });
+    }
+
+
+   
+   function geocodeService(geocoder, outputMap) {
+
+      const address = document.getElementById("searchbox").value;
+      geocoder.geocode({ address: address }, (results, status) => {
+
+       outputMap.setCenter(results[0].geometry.location);
+         
+          var request = {
+            location: results[0].geometry.location,
+            radius: '2000',
+            type: ['school']
+          };
+
+          service = new google.maps.places.PlacesService(map);
+          service.nearbySearch(request, callback);
+       
+      });
+    }   
+
+   function callback(results, status) {
+      if (status == google.maps.places.PlacesServiceStatus.OK) {
+        for (var i = 0; i < results.length; i++) { 
+
+          new google.maps.Marker({
+            map,
+            title: results[i].name,
+            position: results[i].geometry.location,
+          });
+
+
+        }
+      }
+    }
+
+  
+
+    </script>
+</head>
+<body>
+<input type="text" id="searchbox" placeholder="enter an address"/>
+<button id="search"> Search </button>
+
+<div id="map">
+
+</div>
+</body>
+</html>
