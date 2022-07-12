@@ -1,0 +1,13 @@
+
+.completed::after {
+  text-decoration: none;
+  content: "  Completed";
+  font-weight: bold;
+  color: blue;
+  position:absolute;
+  
+}
+
+.line {
+  text-decoration: line-through;
+}
