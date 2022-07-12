@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+tr:nth-child(even) {
+  background-color: #808080;
+}
+
+table,th,td {
+  border : 1px solid black;
+  border-collapse: collapse;
+}
+th,td {
+  padding: 5px;
+}
+
+</style>
+</head>
+
+
+<body>
+
+<h1>AJAX-Javascript Example</h1>
+
+<button type="button" onclick="loadDoc()">Get my movies collection</button>
+<br><br>
+<table id="demo"></table>
+
+<script>
+function loadDoc() {
+
+
+  const url = 'http://localhost:9002/movies.xml';
+
+  fetch(url, {mode: 'no-cors'})
+  .then(function(resp){
+    return resp.text();
+  })
+  .then(function(data){
+    let parser = new DOMParser(),
+    xmlDoc = parser.parseFromString(data, 'text/xml');
+    // console.log(xmlDoc.getElementsByTagName('playlist'));
+  var i;
+  //var xmlDoc = xml.responseXML;
+  var table="<tr><th>Title</th><th>Genres</th><th>Director of the Movie</th><th>Cast(Names)</th><th>Short description(Synopsis)</th><th>IMDB-rating</th></tr>";
+  var tmp;
+  var x = xmlDoc.getElementsByTagName("movie");
+  for (i = 0; i <x.length; i++) { 
+    var title= x[i].getElementsByTagName("title")[0].childNodes[0].nodeValue ;
+    var director= x[i].getElementsByTagName("director")[0].childNodes[0].nodeValue;
+  
+
+    var genres="";
+		var comm_sepration=", ";
+					tmp = x[i].getElementsByTagName("genre");
+         
+          Array.from(tmp).forEach(function (p) {
+          genres+=p.childNodes[0].nodeValue+comm_sepration;
+        
+         }); 
+  	    genres=genres.slice(0,-2);
+
+
+	var names="";
+
+  tmp = x[i].getElementsByTagName("person");
+          console.log(tmp);
+        
+          Array.from(tmp).forEach(function (p) {
+            //console.log(p.name);
+          names+= p.getAttribute("name") +comm_sepration;
+          //console.log(names);
+         }); 
+
+					names=names.slice(0,-2);
+									
+
+					var short_desc = x[i].getElementsByTagName("synopsis")[0].childNodes[0].nodeValue;
+					var imdb_rating= x[i].getElementsByTagName("score")[0].childNodes[0].nodeValue;
+var info = '<tr><td>' + title +'</td><td>' +  genres + '</td><td>' + director + '</td><td>' + names + '</td><td>' + short_desc + '</td><td>' + imdb_rating + '</td></tr>';
+table+= info;
+
+  }
+  document.getElementById("demo").innerHTML = table;
+})
+}
+</script>
+
+</body>
+</html>
